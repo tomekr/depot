@@ -1,4 +1,7 @@
 class Product < ActiveRecord::Base
+  has_many :line_items
+
+  before_destroy :ensure_not_referenced_by_any_line_item
   # Validation constants
   TITLE_LENGTH = 10
 
@@ -29,4 +32,22 @@ class Product < ActiveRecord::Base
   # attribute. Add validation to the Product model to check that the title is
   # at least ten charac- ters long.
   validates :title, length: { minimum: TITLE_LENGTH }
+
+  private
+
+  # Define a hook method named ensure_not_referenced_by_any_line_item(). A hook
+  # method is a method that Rails calls automatically at a given point in an
+  # object’s life. In this case, the method will be called before Rails
+  # attempts to destroy a row in the database. If the hook method returns
+  # false, the row will not be destroyed.
+  #
+  # ensure that there are no line items referencing this product
+  def ensure_not_referenced_by_any_line_item
+    if line_items.empty?
+      return true
+    else
+      errors.add :base, 'Line Items present'
+      return false
+    end
+  end
 end
