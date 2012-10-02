@@ -48,6 +48,9 @@ class LineItemsController < ApplicationController
     respond_to do |format|
       if @line_item.save
         format.html { redirect_to store_index_url }
+        # Because of this change, when create finishes handling the Ajax
+        # request, Rails will look for a create template to render.
+        format.js
         format.json { render json: @line_item, status: :created, location: @line_item }
       else
         format.html { render action: "new" }
