@@ -56,9 +56,11 @@ class OrdersController < ApplicationController
     respond_to do |format|
       if @order.save
         Cart.destroy session[:cart_id]
-        format.html { redirect_to @order, notice: 'Order was successfully created.' }
+        session[:cart_id] = nil
+        format.html { redirect_to store_index_url, notice: 'Thank you for your oder.' }
         format.json { render json: @order, status: :created, location: @order }
       else
+        @cart = current_cart
         format.html { render action: "new" }
         format.json { render json: @order.errors, status: :unprocessable_entity }
       end
