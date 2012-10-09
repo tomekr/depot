@@ -80,4 +80,13 @@ class ProductsController < ApplicationController
       format.json { head :no_content }
     end
   end
+
+  # By adding format.atom, we cause Rails to look for a template named
+  # who_bought. atom.builder. 
+  def who_bought
+    @product = Product.find params[:id]
+    respond_to do |format|
+      format.atom
+    end
+  end
 end
